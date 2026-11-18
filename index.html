@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>재무 계산기 &amp; 용어 사전</title>
+<meta name="description" content="부가세·대출 이자·환율·원천징수 계산기와 재무 용어 사전, FAQ, 공개 가이드 자료실">
+<script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<style>
+:root{
+  /* ===== 우리 부서 포털 디자인 시스템 토큰 (다크 민트) ===== */
+  --bg:#0e1517; --surface:#172125; --surface-sunken:#0f1a1d; --brand-wash:#13211f; --table-stripe:#131f23;
+  --line:#2a383d; --line-strong:#2f4046; --line-brand:#2a4a3f; --line-dashed:#2f4a40; --line-row:#22323a;
+  --ink:#e3ece8; --ink-strong:#dcebe5; --ink-soft:#c3d2cb; --ink-muted:#98a9a2;
+  --brand:#25795a; --on-brand:#ffffff; --brand-accent:#5fc19a; --brand-text:#8fd0b5; --brand-tint:#1f3a31; --link:#7fd4b2;
+  --ring-soft:rgba(95,193,154,.25); --focus:#4f9d80;
+  --chrome:#080f11; --nav-ink:#a9c8bb; --inverse:#dcebe5; --inverse-hover:#bfe0d2; --on-inverse:#0a1315; --on-dark:#ffffff;
+  --hero-start:#080f11; --hero-mid:#0f2a24; --hero-end:#14392f; --hero-ink:#c3d9cf; --hero-eyebrow:#a9d0bf; --footer-ink:#7f948b;
+  --table-head:#1f4a3b; --danger:#ff9b9b; --mark:#5c4a14; --on-mark:#fff3c4;
+  --radius-xs:3px; --radius-sm:6px; --radius-md:8px; --radius-lg:10px; --radius-xl:12px; --radius-2xl:14px; --radius-pill:999px;
+  --shadow-card:0 1px 2px rgba(0,0,0,.06), 0 6px 18px rgba(0,0,0,.06); --shadow-hover:0 10px 24px rgba(0,0,0,.45);
+  --nav-height:60px;
+  --font-sans:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  /* ===== 기존 변수 → 토큰 연결 (규칙 본문은 그대로) ===== */
+  --g950:var(--chrome); --g900:var(--ink-strong); --g800:var(--brand-text); --g700:var(--brand); --g600:var(--brand-accent);
+  --g200:var(--line-brand); --g100:var(--brand-tint); --g50:var(--brand-wash);
+  --card:var(--surface); --muted:var(--ink-muted);
+  --accent:#d1a64f; --warn:#8a5a00;
+  --radius:var(--radius-2xl); --nav-h:var(--nav-height); --shadow:var(--shadow-card);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-sans);
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+section{scroll-margin-top:calc(var(--nav-h) + 8px)}
+a{color:var(--g700)}
+:focus-visible{outline:3px solid #4f9d80; outline-offset:2px; border-radius:6px}
+
+/* ---------- 상단 고정 메뉴 ---------- */
+.topbar{
+  position:sticky; top:0; z-index:100; height:var(--nav-h);
+  background:rgba(0,0,0,.96); backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.topbar-in{
+  max-width:1080px; margin:0 auto; height:100%; padding:0 20px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.brand{display:flex; align-items:center; gap:10px; color:#fff; text-decoration:none; font-weight:700; letter-spacing:-.02em; white-space:nowrap}
+.brand-mark{
+  width:30px; height:30px; border-radius:8px; background:var(--g600);
+  display:grid; place-items:center; font-size:16px; color:#fff;
+}
+.menu{display:flex; gap:4px; overflow-x:auto; scrollbar-width:none}
+.menu::-webkit-scrollbar{display:none}
+.menu a{
+  color:#a9c8bb; text-decoration:none; font-size:15px; font-weight:500;
+  padding:8px 14px; border-radius:999px; white-space:nowrap; transition:background .2s,color .2s;
+}
+.menu a:hover{background:rgba(255,255,255,.08); color:#fff}
+.menu a.active{background:#fff; color:var(--g900); font-weight:700}
+@media (max-width:720px){
+  .brand-text{display:none}
+  .topbar-in{padding:0 10px}
+  .menu a{padding:8px 11px; font-size:14px}
+}
+
+/* ---------- 홈(히어로) ---------- */
+.hero{
+  background:linear-gradient(160deg,var(--g950),var(--g800) 70%,var(--g700));
+  color:#fff; padding:72px 20px 96px; position:relative; overflow:hidden;
+}
+.hero::after{
+  content:""; position:absolute; right:-120px; top:-120px; width:380px; height:380px; border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%);
+}
+.wrap{max-width:1080px; margin:0 auto; position:relative; z-index:1}
+.eyebrow{display:inline-block; font-size:13px; letter-spacing:.08em; color:#a9d0bf; border:1px solid rgba(255,255,255,.2); padding:4px 12px; border-radius:999px; margin-bottom:18px}
+.hero h1{font-size:clamp(30px,5.2vw,48px); line-height:1.2; margin:0 0 14px; letter-spacing:-.03em}
+.hero p{max-width:620px; margin:0 0 28px; color:#c3d9cf; font-size:17px}
+.hero-cta{display:flex; gap:10px; flex-wrap:wrap}
+.btn{
+  display:inline-block; border:0; cursor:pointer; text-decoration:none;
+  padding:12px 22px; border-radius:10px; font:inherit; font-weight:600; font-size:15px; transition:transform .15s, background .2s;
+}
+.btn:active{transform:translateY(1px)}
+.btn-light{background:#fff; color:var(--g900)}
+.btn-light:hover{background:var(--g100)}
+.btn-ghost{background:transparent; color:#fff; border:1px solid rgba(255,255,255,.35)}
+.btn-ghost:hover{background:rgba(255,255,255,.1)}
+
+/* ---------- 공통 섹션 ---------- */
+main .block{padding:72px 20px 8px}
+.sec-head{margin-bottom:26px}
+.sec-head .kicker{font-size:13px; font-weight:700; letter-spacing:.08em; color:var(--g600)}
+.sec-head h2{margin:4px 0 6px; font-size:clamp(24px,3.6vw,32px); letter-spacing:-.03em; color:var(--g900)}
+.sec-head p{margin:0; color:var(--muted)}
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow)}
+
+/* 계산기를 히어로 위로 살짝 겹치게 */
+#calc{margin-top:-48px; padding-top:0}
+#calc .sec-head{display:none}
+
+/* ---------- 탭 ---------- */
+.tabs{display:flex; border-bottom:1px solid var(--line); padding:8px 8px 0; gap:4px; overflow-x:auto}
+.tab{
+  appearance:none; background:none; border:0; cursor:pointer; font:inherit; font-weight:600; font-size:15.5px;
+  color:var(--muted); padding:14px 20px; border-radius:10px 10px 0 0; position:relative; white-space:nowrap;
+}
+.tab:hover{color:var(--g800); background:var(--g50)}
+.tab[aria-selected="true"]{color:var(--g800)}
+.tab[aria-selected="true"]::after{content:""; position:absolute; left:12px; right:12px; bottom:-1px; height:3px; background:var(--g600); border-radius:3px 3px 0 0}
+.panel{padding:28px; display:none}
+.panel.on{display:block}
+@media (max-width:640px){.panel{padding:20px 16px}}
+
+.calc-grid{display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:28px}
+@media (max-width:860px){.calc-grid{grid-template-columns:1fr}}
+.fields{display:grid; gap:16px; align-content:start}
+.row2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+label.fl{display:block; font-size:14px; font-weight:600; color:var(--g900); margin-bottom:6px}
+.hint{font-size:12.5px; color:var(--muted); margin-top:4px}
+input[type=text],input[type=number],select{
+  width:100%; padding:12px 14px; font:inherit; color:var(--ink);
+  border:1px solid #2f4046; border-radius:10px; background:#fff; transition:border-color .15s, box-shadow .15s;
+}
+input:focus,select:focus{outline:none; border-color:var(--g600); box-shadow:0 0 0 3px rgba(95,193,154,.25)}
+.unit-wrap{position:relative}
+.unit-wrap input{padding-right:48px; text-align:right; font-variant-numeric:tabular-nums}
+.unit-wrap .u{position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:14px; pointer-events:none}
+.seg{display:flex; background:var(--g50); border:1px solid var(--line); border-radius:10px; padding:3px; gap:3px}
+.seg label{position:relative; flex:1; text-align:center; cursor:pointer; padding:9px 8px; border-radius:8px; font-size:14px; font-weight:600; color:var(--muted)}
+.seg input{position:absolute; opacity:0; pointer-events:none}
+.seg input:checked + span{color:#fff}
+.seg label:has(input:checked){background:var(--g700); color:#fff}
+.seg label:has(input:focus-visible){outline:3px solid #4f9d80}
+
+.result{background:var(--g50); border:1px solid var(--g200); border-radius:12px; padding:22px; align-self:start}
+.result h3{margin:0 0 14px; font-size:14px; color:var(--g800); letter-spacing:.04em}
+.big{font-size:clamp(28px,4vw,36px); font-weight:800; color:var(--g900); letter-spacing:-.03em; font-variant-numeric:tabular-nums; line-height:1.2}
+.big small{font-size:.5em; font-weight:600; color:var(--muted); margin-left:4px}
+.big-label{font-size:13.5px; color:var(--muted); margin-bottom:2px}
+.kv{margin:18px 0 0; display:grid; gap:0}
+.kv div{display:flex; justify-content:space-between; gap:12px; padding:10px 0; border-top:1px dashed #2f4a40; font-size:15px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0; font-weight:700; font-variant-numeric:tabular-nums; text-align:right}
+.note{margin-top:14px; font-size:12.5px; color:var(--muted)}
+.err{color:#9b2c2c; font-size:13.5px; margin-top:8px; min-height:1em}
+
+.sched{margin-top:22px}
+.sched summary{cursor:pointer; font-weight:700; color:var(--g800); padding:10px 0}
+.table-scroll{max-height:340px; overflow:auto; border:1px solid var(--line); border-radius:10px}
+table.t{border-collapse:collapse; width:100%; font-size:14px; font-variant-numeric:tabular-nums}
+table.t th,table.t td{padding:9px 12px; text-align:right; border-bottom:1px solid #22323a; white-space:nowrap}
+table.t th:first-child,table.t td:first-child{text-align:center}
+table.t thead th{position:sticky; top:0; background:var(--g800); color:#fff; font-weight:600}
+table.t tbody tr:nth-child(even){background:#131f23}
+
+/* ---------- 용어 사전 ---------- */
+.search{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px}
+.search input{flex:1 1 260px; padding-left:42px; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%235b6862' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='9' cy='9' r='6'/%3E%3Cpath d='m14 14 4 4'/%3E%3C/svg%3E") no-repeat 13px center}
+.chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px}
+.chip{
+  font:inherit; font-size:14px; padding:7px 14px; border-radius:999px; cursor:pointer;
+  background:#fff; border:1px solid var(--line); color:var(--muted);
+}
+.chip:hover{border-color:var(--g600); color:var(--g800)}
+.chip[aria-pressed="true"]{background:var(--g700); border-color:var(--g700); color:#fff}
+.count{font-size:13.5px; color:var(--muted); margin-bottom:12px}
+.terms{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px}
+@media (max-width:760px){.terms{grid-template-columns:1fr}}
+.term{padding:18px 20px}
+.term h3{margin:0 0 6px; font-size:17px; color:var(--g900); display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.tag{font-size:11.5px; font-weight:700; padding:2px 9px; border-radius:999px; background:var(--g100); color:var(--g600)}
+.term p{margin:0; font-size:15px; color:#c3d2cb}
+mark{background:#f3e3b3; color:inherit; padding:0 2px; border-radius:3px}
+.empty{padding:36px; text-align:center; color:var(--muted)}
+
+/* ---------- FAQ ---------- */
+.faq{display:grid; gap:10px}
+.faq details{padding:0}
+.faq summary{
+  list-style:none; cursor:pointer; padding:18px 52px 18px 20px; font-weight:700; color:var(--g900); position:relative; font-size:16px;
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{
+  content:"+"; position:absolute; right:20px; top:50%; transform:translateY(-50%);
+  width:26px; height:26px; display:grid; place-items:center; border-radius:50%;
+  background:var(--g100); color:var(--g600); font-size:18px; line-height:1;
+}
+.faq details[open] summary::after{content:"−"}
+.faq details[open] summary{border-bottom:1px solid var(--line)}
+.faq .ans{padding:16px 20px 20px; color:#c3d2cb; font-size:15px}
+.faq .ans p{margin:0 0 8px}
+.faq .ans p:last-child{margin:0}
+
+/* ---------- 자료실 ---------- */
+.lib{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px}
+@media (max-width:960px){.lib{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.lib{grid-template-columns:1fr}}
+.res{padding:20px; display:flex; flex-direction:column; gap:8px; transition:transform .2s, box-shadow .2s, border-color .2s}
+.res:hover{transform:translateY(-3px); border-color:var(--g600); box-shadow:0 10px 24px rgba(0,0,0,.12)}
+.res .org{font-size:12.5px; font-weight:700; color:var(--g600); letter-spacing:.03em}
+.res h3{margin:0; font-size:17px; color:var(--g900); line-height:1.4}
+.res p{margin:0; font-size:14.5px; color:var(--muted); flex:1}
+.res a.go{align-self:flex-start; text-decoration:none; font-weight:700; font-size:14px; color:var(--g700); padding:8px 0}
+.res a.go:hover{text-decoration:underline}
+.lib-note{margin-top:14px; font-size:13px; color:var(--muted)}
+
+/* ---------- 푸터 ---------- */
+footer{margin-top:88px; background:var(--g950); color:#7f948b; padding:36px 20px; font-size:13.5px}
+footer strong{color:#fff}
+footer .wrap{display:grid; gap:8px}
+.top-btn{
+  position:fixed; right:18px; bottom:18px; width:44px; height:44px; border-radius:50%;
+  border:0; background:var(--g700); color:#fff; font-size:18px; cursor:pointer; box-shadow:var(--shadow);
+  opacity:0; pointer-events:none; visibility:hidden; transition:opacity .2s, visibility .2s;
+}
+.top-btn.show{opacity:1; pointer-events:auto; visibility:visible}
+
+/* ===== 다크 시안 덮어쓰기 ===== */
+:root{color-scheme:dark}
+body{background:var(--bg)}
+a{color:#7fd4b2}
+.topbar{background:rgba(8,16,18,.96); border-bottom-color:rgba(255,255,255,.06)}
+.brand-mark{background:#25795a}
+.menu a{color:#a9c8bb}
+.menu a.active{background:#dcebe5; color:#0a1315}
+.hero{background:linear-gradient(160deg,#080f11,#0f2a24 70%,#14392f)}
+.btn-light{background:#dcebe5; color:#0a1315}
+.btn-light:hover{background:#bfe0d2}
+input[type=text],input[type=number],select{background:#0f1a1d; color:var(--ink); border-color:#2f4046}
+select option{background:#0f1a1d; color:var(--ink)}
+.search input{background-color:#0f1a1d; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%2398a9a2' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='9' cy='9' r='6'/%3E%3Cpath d='m14 14 4 4'/%3E%3C/svg%3E")}
+.chip{background:#0f1a1d}
+.chip[aria-pressed="true"]{background:#25795a; border-color:#25795a; color:#fff}
+table.t thead th{background:#1f4a3b}
+table.t tbody tr:nth-child(even){background:#131f23}
+table.t th,table.t td{border-bottom-color:#22323a}
+.res a.go{color:#7fd4b2}
+.res:hover{box-shadow:0 10px 24px rgba(0,0,0,.45)}
+.err{color:#ff9b9b}
+mark{background:#5c4a14; color:#fff3c4}
+.seg label:has(input:checked){background:#25795a}
+footer{background:#080f11}
+
+/* 자료실: 내려받기 파일 목록 */
+.dl-head{margin:36px 0 12px; font-size:18px; color:var(--g900)}
+.dl-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px}
+.dl-item{padding:18px 20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+.dl-info{flex:1 1 320px; min-width:0}
+.dl-name{margin:0; font-size:16px; font-weight:700; color:var(--g900); line-height:1.4; word-break:keep-all; overflow-wrap:anywhere}
+.dl-desc{margin:4px 0 0; font-size:14px; color:var(--muted)}
+.dl-size{flex:0 0 auto; font-size:13.5px; color:var(--muted); white-space:nowrap}
+.dl-btn{flex:0 0 auto; display:inline-flex; align-items:center; gap:6px; text-decoration:none; font-weight:700; font-size:14px; padding:10px 18px; border-radius:10px; background:var(--g700); color:#fff; border:1px solid transparent}
+.dl-btn:hover{filter:brightness(1.1)}
+.dl-btn:focus-visible{outline:3px solid var(--g600); outline-offset:2px}
+
+/* 모바일 햄버거 메뉴 */
+.nav-toggle{display:none; flex:0 0 auto; width:44px; height:44px; padding:0; border:1px solid rgba(255,255,255,.18); border-radius:10px; background:transparent; color:#fff; cursor:pointer; align-items:center; justify-content:center}
+.nav-toggle:hover{background:rgba(255,255,255,.08)}
+.nav-toggle .bars,.nav-toggle .bars::before,.nav-toggle .bars::after{display:block; width:20px; height:2px; background:currentColor; border-radius:2px; transition:transform .2s, opacity .2s}
+.nav-toggle .bars{position:relative}
+.nav-toggle .bars::before,.nav-toggle .bars::after{content:""; position:absolute; left:0}
+.nav-toggle .bars::before{top:-6px}
+.nav-toggle .bars::after{top:6px}
+.nav-toggle[aria-expanded="true"] .bars{background:transparent}
+.nav-toggle[aria-expanded="true"] .bars::before{top:0; transform:rotate(45deg)}
+.nav-toggle[aria-expanded="true"] .bars::after{top:0; transform:rotate(-45deg)}
+@media (max-width:720px){
+  .brand{min-width:0}
+  .brand-text{display:inline; overflow:hidden; text-overflow:ellipsis; font-size:15px}
+  .nav-toggle{display:inline-flex}
+  .menu{
+    display:none; position:absolute; top:100%; left:0; right:0;
+    flex-direction:column; gap:2px; overflow:visible; padding:10px 12px 14px;
+    background:#0b1214; border-bottom:1px solid rgba(255,255,255,.12); box-shadow:0 14px 28px rgba(0,0,0,.45);
+  }
+  .menu.open{display:flex}
+  .menu a{padding:14px 16px; font-size:16px; border-radius:10px; white-space:normal}
+  .menu a.active{position:relative}
+  .menu a.active::before{content:""; position:absolute; left:6px; top:50%; width:4px; height:18px; margin-top:-9px; border-radius:2px; background:var(--g600)}
+}
+
+/* ===== 라이트 모드 (다크모드 전환 버튼) ===== */
+.theme-toggle{flex:0 0 auto; width:44px; height:44px; padding:0; border:1px solid rgba(255,255,255,.18); border-radius:10px; background:transparent; color:#fff; font-size:20px; line-height:1; cursor:pointer; display:inline-flex; align-items:center; justify-content:center}
+.theme-toggle:hover{background:rgba(255,255,255,.1)}
+@media (min-width:721px){ .menu{margin-left:auto} }
+@media (max-width:720px){ .nav-toggle{margin-left:auto} .topbar-in{gap:8px} }
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f1f4f2; --surface:#ffffff; --surface-sunken:#f2f7f4; --brand-wash:#f2f7f4; --table-stripe:#f2f7f4;
+  --line:#d7dedb; --line-strong:#cfd8d3; --line-brand:#cfe3da; --line-dashed:#cfe3da; --line-row:#e3e9e6;
+  --ink:#1e2924; --ink-strong:#14352b; --ink-soft:#3a4741; --ink-muted:#5b6862;
+  --brand:#24604b; --brand-accent:#2f7a5f; --brand-text:#1b4a3a; --brand-tint:#e6f0ec; --link:#24604b;
+  --chrome:#0f2a21; --shadow-card:0 1px 2px rgba(20,53,43,.06), 0 6px 18px rgba(20,53,43,.06);
+}
+html[data-theme="light"] a{color:var(--g700)}
+html[data-theme="light"] .brand,html[data-theme="light"] .menu a:hover{color:#fff}
+html[data-theme="light"] .menu a{color:#a9c8bb}
+html[data-theme="light"] .menu a.active{background:#fff; color:#14352b}
+html[data-theme="light"] .brand-mark{background:var(--g600)}
+html[data-theme="light"] .hero{background:linear-gradient(160deg,var(--g950),var(--g800) 70%,var(--g700))}
+html[data-theme="light"] .btn-light{background:#fff; color:#14352b}
+html[data-theme="light"] .btn-light:hover{background:#e6f0ec}
+html[data-theme="light"] input[type=text],html[data-theme="light"] input[type=number],html[data-theme="light"] select{background:#fff; color:var(--ink); border-color:#cfd8d3}
+html[data-theme="light"] select option{background:#fff; color:var(--ink)}
+html[data-theme="light"] .search input{background-color:#fff}
+html[data-theme="light"] .chip{background:#fff}
+html[data-theme="light"] .chip[aria-pressed="true"]{background:var(--g700); border-color:var(--g700); color:#fff}
+html[data-theme="light"] table.t thead th{background:var(--g800)}
+html[data-theme="light"] table.t tbody tr:nth-child(even){background:#f2f7f4}
+html[data-theme="light"] table.t th,html[data-theme="light"] table.t td{border-bottom-color:#e3e9e6}
+html[data-theme="light"] .kv div{border-top-color:#cfe3da}
+html[data-theme="light"] .term p,html[data-theme="light"] .faq .ans{color:#3a4741}
+html[data-theme="light"] .res a.go{color:var(--g700)}
+html[data-theme="light"] .res:hover{box-shadow:0 10px 24px rgba(20,53,43,.14)}
+html[data-theme="light"] .err{color:#9b2c2c}
+html[data-theme="light"] mark{background:#f3e3b3; color:inherit}
+html[data-theme="light"] .seg label:has(input:checked){background:var(--g700)}
+html[data-theme="light"] footer{background:var(--g950)}
+html[data-theme="light"] :focus-visible{outline-color:var(--g600)}
+</style>
+</head>
+<body>
+
+<!-- 상단 고정 메뉴 -->
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#home" data-nav><span class="brand-mark" aria-hidden="true">₩</span><span class="brand-text">재무 계산기 &amp; 용어 사전</span></a>
+    <button type="button" class="nav-toggle" id="navToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mainMenu"><span class="bars" aria-hidden="true"></span></button>
+    <nav class="menu" id="mainMenu" aria-label="주요 메뉴">
+      <a href="#home" data-nav>홈</a>
+      <a href="#calc" data-nav>계산기</a>
+      <a href="#glossary" data-nav>용어 사전</a>
+      <a href="#faq" data-nav>FAQ</a>
+      <a href="#library" data-nav>자료실</a>
+    </nav>
+    <button type="button" class="theme-toggle" id="themeToggle" aria-label="라이트 모드로 전환" title="라이트 모드로 전환"><span aria-hidden="true">☀</span></button>
+  </div>
+</header>
+
+<main>
+  <!-- 홈 -->
+  <section id="home" class="hero">
+    <div class="wrap">
+      <span class="eyebrow">생활 재무 도구 모음</span>
+      <h1>재무 계산기 &amp; 용어 사전</h1>
+      <p>부가세, 대출 이자, 환율 환산을 바로 계산하고, 헷갈리는 재무 용어는 검색으로 확인하세요. 모든 계산은 브라우저 안에서만 처리되며 입력값은 저장·전송되지 않습니다.</p>
+      <div class="hero-cta">
+        <a class="btn btn-light" href="#calc" data-nav>계산기 바로 사용</a>
+        <a class="btn btn-ghost" href="#glossary" data-nav>용어 검색하기</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 계산기 -->
+  <section id="calc" class="block">
+    <div class="wrap">
+      <div class="sec-head"><div class="kicker">CALCULATORS</div><h2>계산기</h2></div>
+      <div class="card">
+        <div class="tabs" role="tablist" aria-label="계산기 종류">
+          <button class="tab" role="tab" id="tab-vat" aria-controls="panel-vat" aria-selected="true">부가세 계산기</button>
+          <button class="tab" role="tab" id="tab-loan" aria-controls="panel-loan" aria-selected="false" tabindex="-1">대출 이자 계산기</button>
+          <button class="tab" role="tab" id="tab-fx" aria-controls="panel-fx" aria-selected="false" tabindex="-1">환율 환산기</button>
+          <button class="tab" role="tab" id="tab-wh" aria-controls="panel-wh" aria-selected="false" tabindex="-1">원천징수 계산기</button>
+        </div>
+
+        <!-- 부가세 -->
+        <div class="panel on" role="tabpanel" id="panel-vat" aria-labelledby="tab-vat">
+          <div class="calc-grid">
+            <div class="fields">
+              <div>
+                <span class="fl" style="display:block;font-size:14px;font-weight:600;color:var(--g900);margin-bottom:6px">입력 기준</span>
+                <div class="seg" role="radiogroup" aria-label="입력 기준">
+                  <label><input type="radio" name="vatMode" value="excl" checked><span>공급가액 입력</span></label>
+                  <label><input type="radio" name="vatMode" value="incl"><span>합계금액 입력</span></label>
+                </div>
+              </div>
+              <div>
+                <label class="fl" for="vatAmount">금액</label>
+                <div class="unit-wrap"><input type="text" id="vatAmount" inputmode="numeric" value="1,000,000" autocomplete="off"><span class="u">원</span></div>
+              </div>
+              <div class="row2">
+                <div>
+                  <label class="fl" for="vatRate">세율</label>
+                  <div class="unit-wrap"><input type="number" id="vatRate" value="10" min="0" max="100" step="0.1"><span class="u">%</span></div>
+                </div>
+                <div>
+                  <label class="fl" for="vatRound">원 미만 처리</label>
+                  <select id="vatRound">
+                    <option value="floor">절사</option>
+                    <option value="round">반올림</option>
+                    <option value="ceil">올림</option>
+                  </select>
+                </div>
+              </div>
+              <div class="err" id="vatErr" role="alert"></div>
+            </div>
+            <div class="result" aria-live="polite">
+              <h3>계산 결과</h3>
+              <div class="big-label" id="vatBigLabel">합계금액 (공급가액 + 부가세)</div>
+              <div class="big"><span id="vatTotal">-</span><small>원</small></div>
+              <dl class="kv">
+                <div><dt>공급가액</dt><dd><span id="vatSupply">-</span> 원</dd></div>
+                <div><dt>부가가치세</dt><dd><span id="vatTax">-</span> 원</dd></div>
+              </dl>
+              <p class="note">합계금액 입력 시 공급가액을 먼저 계산한 뒤 부가세를 차액으로 산출합니다. 실제 신고·세금계산서 금액은 세무 담당자 또는 국세청 안내로 확인하세요.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 대출 -->
+        <div class="panel" role="tabpanel" id="panel-loan" aria-labelledby="tab-loan" hidden>
+          <div class="calc-grid">
+            <div class="fields">
+              <div>
+                <label class="fl" for="loanP">대출 원금</label>
+                <div class="unit-wrap"><input type="text" id="loanP" inputmode="numeric" value="100,000,000" autocomplete="off"><span class="u">원</span></div>
+              </div>
+              <div class="row2">
+                <div>
+                  <label class="fl" for="loanR">연 이자율</label>
+                  <div class="unit-wrap"><input type="number" id="loanR" value="4.5" min="0" max="100" step="0.01"><span class="u">%</span></div>
+                </div>
+                <div>
+                  <label class="fl" for="loanN">대출 기간</label>
+                  <div class="row2" style="gap:6px">
+                    <input type="number" id="loanN" value="30" min="1" max="50" step="1">
+                    <select id="loanU" aria-label="기간 단위"><option value="y">년</option><option value="m">개월</option></select>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="fl" for="loanT">상환 방식</label>
+                <select id="loanT">
+                  <option value="annuity">원리금균등상환 (매월 같은 금액)</option>
+                  <option value="principal">원금균등상환 (원금 동일, 이자 감소)</option>
+                  <option value="bullet">만기일시상환 (매월 이자만, 만기에 원금)</option>
+                </select>
+                <div class="hint">월 이자 = 잔액 × 연이자율 ÷ 12 (고정금리·매월 말 상환 가정)</div>
+              </div>
+              <div class="err" id="loanErr" role="alert"></div>
+            </div>
+            <div class="result" aria-live="polite">
+              <h3>계산 결과</h3>
+              <div class="big-label" id="loanBigLabel">월 납입액</div>
+              <div class="big"><span id="loanMonthly">-</span><small>원</small></div>
+              <dl class="kv">
+                <div><dt id="loanSubLabel">마지막 달 납입액</dt><dd><span id="loanLast">-</span> 원</dd></div>
+                <div><dt>총 이자</dt><dd><span id="loanInterest">-</span> 원</dd></div>
+                <div><dt>총 상환액</dt><dd><span id="loanTotal">-</span> 원</dd></div>
+                <div><dt>원금 대비 이자 비율</dt><dd><span id="loanRatio">-</span> %</dd></div>
+              </dl>
+              <p class="note">거치기간, 중도상환수수료, 변동금리, 일 단위 이자 계산은 반영하지 않은 단순 추정치입니다. 실제 조건은 금융기관 안내를 따르세요.</p>
+            </div>
+          </div>
+          <details class="sched">
+            <summary>월별 상환 스케줄 보기</summary>
+            <div class="table-scroll">
+              <table class="t">
+                <thead><tr><th>회차</th><th>납입액</th><th>원금</th><th>이자</th><th>잔액</th></tr></thead>
+                <tbody id="loanRows"></tbody>
+              </table>
+            </div>
+          </details>
+        </div>
+
+        <!-- 환율 -->
+        <div class="panel" role="tabpanel" id="panel-fx" aria-labelledby="tab-fx" hidden>
+          <div class="calc-grid">
+            <div class="fields">
+              <div class="row2">
+                <div>
+                  <label class="fl" for="fxCur">통화 코드</label>
+                  <input type="text" id="fxCur" value="USD" maxlength="6" autocomplete="off" style="text-transform:uppercase">
+                </div>
+                <div>
+                  <label class="fl" for="fxUnit">환율 기준 단위</label>
+                  <select id="fxUnit">
+                    <option value="1">1 단위당</option>
+                    <option value="100">100 단위당 (예: JPY)</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="fl" for="fxRate">환율 (직접 입력)</label>
+                <div class="unit-wrap"><input type="text" id="fxRate" inputmode="decimal" value="1,400" autocomplete="off"><span class="u">원</span></div>
+                <div class="hint">고시환율은 은행·한국은행 등에서 확인해 직접 입력하세요. 예시값은 임의의 숫자입니다.</div>
+              </div>
+              <div>
+                <span class="fl" style="display:block;font-size:14px;font-weight:600;color:var(--g900);margin-bottom:6px">환산 방향</span>
+                <div class="seg" role="radiogroup" aria-label="환산 방향">
+                  <label><input type="radio" name="fxDir" value="f2k" checked><span>외화 → 원화</span></label>
+                  <label><input type="radio" name="fxDir" value="k2f"><span>원화 → 외화</span></label>
+                </div>
+              </div>
+              <div class="row2">
+                <div>
+                  <label class="fl" for="fxAmt" id="fxAmtLabel">외화 금액</label>
+                  <input type="text" id="fxAmt" inputmode="decimal" value="1,000" autocomplete="off">
+                </div>
+                <div>
+                  <label class="fl" for="fxFee">환전 수수료율 (선택)</label>
+                  <div class="unit-wrap"><input type="number" id="fxFee" value="0" min="0" max="20" step="0.01"><span class="u">%</span></div>
+                </div>
+              </div>
+              <div class="err" id="fxErr" role="alert"></div>
+            </div>
+            <div class="result" aria-live="polite">
+              <h3>환산 결과</h3>
+              <div class="big-label" id="fxBigLabel">수수료 반영 후 금액</div>
+              <div class="big"><span id="fxNet">-</span><small id="fxNetUnit">원</small></div>
+              <dl class="kv">
+                <div><dt>수수료 전 환산액</dt><dd><span id="fxGross">-</span> <span class="fxu">원</span></dd></div>
+                <div><dt>수수료</dt><dd><span id="fxFeeAmt">-</span> <span class="fxu">원</span></dd></div>
+                <div><dt>적용 환율</dt><dd><span id="fxApplied">-</span></dd></div>
+              </dl>
+              <p class="note">수수료는 환산액에서 차감하는 단순 방식입니다. 실제 환전 시 스프레드·우대율·송금수수료 등에 따라 달라질 수 있습니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 원천징수 -->
+        <div class="panel" role="tabpanel" id="panel-wh" aria-labelledby="tab-wh" hidden>
+          <div class="calc-grid">
+            <div class="fields">
+              <div>
+                <label class="fl" for="whType">소득 구분</label>
+                <select id="whType">
+                  <option value="biz">사업소득 (원천징수대상, 3%)</option>
+                  <option value="other60">기타소득 (필요경비 60% 의제, 20%)</option>
+                  <option value="other0">기타소득 (필요경비 없음, 20%)</option>
+                  <option value="fin">이자·배당소득 (일반, 14%)</option>
+                  <option value="custom">직접 입력</option>
+                </select>
+              </div>
+              <div>
+                <label class="fl" for="whPay">지급액 (세전)</label>
+                <div class="unit-wrap"><input type="text" id="whPay" inputmode="numeric" value="1,000,000" autocomplete="off"><span class="u">원</span></div>
+              </div>
+              <div class="row2">
+                <div>
+                  <label class="fl" for="whExp">필요경비율</label>
+                  <div class="unit-wrap"><input type="number" id="whExp" value="0" min="0" max="100" step="0.1"><span class="u">%</span></div>
+                </div>
+                <div>
+                  <label class="fl" for="whRate">소득세율</label>
+                  <div class="unit-wrap"><input type="number" id="whRate" value="3" min="0" max="100" step="0.1"><span class="u">%</span></div>
+                </div>
+              </div>
+              <div class="row2">
+                <div>
+                  <label class="fl" for="whLocal">지방소득세율 (소득세 대비)</label>
+                  <div class="unit-wrap"><input type="number" id="whLocal" value="10" min="0" max="100" step="0.1"><span class="u">%</span></div>
+                </div>
+                <div>
+                  <label class="fl" for="whRound">원 미만 처리</label>
+                  <select id="whRound">
+                    <option value="floor">절사</option>
+                    <option value="round">반올림</option>
+                    <option value="ceil">올림</option>
+                  </select>
+                </div>
+              </div>
+              <div class="err" id="whErr" role="alert"></div>
+            </div>
+            <div class="result" aria-live="polite">
+              <h3>계산 결과</h3>
+              <div class="big-label">실수령액 (지급액 − 원천징수세액)</div>
+              <div class="big"><span id="whNet">-</span><small>원</small></div>
+              <dl class="kv">
+                <div><dt>필요경비</dt><dd><span id="whExpAmt">-</span> 원</dd></div>
+                <div><dt>원천징수 대상금액</dt><dd><span id="whBase">-</span> 원</dd></div>
+                <div><dt>소득세</dt><dd><span id="whTax">-</span> 원</dd></div>
+                <div><dt>지방소득세</dt><dd><span id="whLocalAmt">-</span> 원</dd></div>
+                <div><dt>원천징수세액 합계</dt><dd><span id="whTotal">-</span> 원</dd></div>
+                <div><dt>지급액 대비 실효세율</dt><dd><span id="whEff">-</span> %</dd></div>
+              </dl>
+              <p class="note" id="whWarn" hidden></p>
+              <p class="note">입력값은 이 브라우저 안에서만 계산하며 저장하거나 외부로 전송하지 않습니다. 세율·필요경비율은 소득세법 제129조(원천징수세율), 시행령 제87조(필요경비), 지방소득세 10%는 지방세법 제103조의13 기준 일반 사례이며 <a href="https://www.law.go.kr" target="_blank" rel="noopener noreferrer">국가법령정보센터</a> 원문 대조가 필요합니다(확인 필요). 근로소득(간이세액표), 비거주자, 조세조약, 개정안 적용 건은 계산 대상이 아니며, 원 미만 처리 기준과 지방소득세 절사 단위도 확인 필요합니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 용어 사전 -->
+  <section id="glossary" class="block">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="kicker">GLOSSARY</div>
+        <h2>재무 용어 사전</h2>
+        <p>용어나 설명 속 단어로 검색하고, 분류로 좁혀 볼 수 있습니다.</p>
+      </div>
+      <div class="search">
+        <label for="q" class="sr" style="position:absolute;left:-9999px">용어 검색</label>
+        <input type="text" id="q" placeholder="예: 원천징수, DSR, 환율" autocomplete="off">
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="분류 필터"></div>
+      <div class="count" id="count" aria-live="polite"></div>
+      <div class="terms" id="terms"></div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="block">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="kicker">FAQ</div>
+        <h2>자주 묻는 재무 질문</h2>
+        <p>일반적인 개념 설명이며, 세율·한도·요건은 법령 개정으로 달라질 수 있습니다.</p>
+      </div>
+      <div class="search">
+        <label for="faqQ" style="position:absolute;left:-9999px">FAQ 검색</label>
+        <input type="text" id="faqQ" placeholder="예: 부가세, 환율, 저장" autocomplete="off">
+      </div>
+      <div class="chips" id="faqChips" role="group" aria-label="FAQ 카테고리 필터"></div>
+      <div class="count" id="faqCount" aria-live="polite"></div>
+      <div class="faq" id="faqList">
+        <details class="card" data-cat="부가세"><summary>공급가액과 합계금액은 어떻게 다른가요?</summary>
+          <div class="ans"><p>공급가액은 부가세를 제외한 거래 금액이고, 합계금액은 공급가액에 부가세를 더한 금액입니다. 세율 10%라면 공급가액 100만 원의 합계금액은 110만 원입니다.</p><p>합계금액만 알 때는 부가세 계산기의 ‘합계금액 입력’을 사용하면 공급가액을 거꾸로 구할 수 있습니다.</p></div></details>
+        <details class="card" data-cat="대출"><summary>원리금균등과 원금균등 중 어느 쪽이 이자를 덜 내나요?</summary>
+          <div class="ans"><p>대출 원금·금리·기간이 같다면 일반적으로 원금균등상환의 총이자가 더 적습니다. 매달 원금을 일정하게 갚아 잔액이 빨리 줄기 때문입니다.</p><p>다만 초기 월 납입액은 원금균등이 더 크므로, 현금흐름 부담과 함께 비교해야 합니다. 대출 이자 계산기에서 두 방식을 바꿔 가며 비교해 보세요.</p></div></details>
+        <details class="card" data-cat="대출"><summary>만기일시상환은 어떤 경우에 쓰나요?</summary>
+          <div class="ans"><p>매월 이자만 내고 만기에 원금을 한 번에 갚는 방식입니다. 월 부담은 낮지만 만기에 큰 금액이 필요하고 총이자는 가장 큽니다. 상품별로 선택 가능 여부와 조건이 다르므로 금융기관에 확인이 필요합니다.</p></div></details>
+        <details class="card" data-cat="환율"><summary>환율은 왜 은행마다, 매매 방향마다 다른가요?</summary>
+          <div class="ans"><p>기준이 되는 매매기준율에 금융기관이 수수료(스프레드)를 더하거나 빼서 ‘살 때’와 ‘팔 때’ 환율을 정하기 때문입니다. 우대율을 적용하면 실제 환율은 더 달라집니다.</p><p>이 포털의 환율 환산기는 고시환율을 직접 입력하는 방식이므로, 거래할 금융기관의 환율을 확인해 입력해야 정확합니다.</p></div></details>
+        <details class="card" data-cat="이용 안내"><summary>이 계산기의 결과를 그대로 신고나 계약에 써도 되나요?</summary>
+          <div class="ans"><p>참고용 추정치입니다. 세금 신고, 대출 계약, 외환 거래의 실제 금액은 원 단위 처리 방식, 일수 계산, 수수료, 개별 약정에 따라 다를 수 있으므로 해당 기관이나 전문가를 통해 확인하세요.</p></div></details>
+        <details class="card" data-cat="이용 안내"><summary>입력한 금액이 어딘가에 저장되나요?</summary>
+          <div class="ans"><p>아니요. 모든 계산은 현재 브라우저 안에서만 이루어지며 서버로 전송하거나 저장하지 않습니다. 페이지를 닫으면 입력값은 사라집니다.</p></div></details>
+        <details class="card" data-cat="이용 안내"><summary>세율이나 한도 같은 기준은 어디서 확인하나요?</summary>
+          <div class="ans"><p>법령은 국가법령정보센터, 세금 관련 안내는 국세청, 금융 규제와 소비자 정보는 금융위원회·금융감독원 공식 사이트에서 확인하는 것이 안전합니다. 아래 자료실에 공식 사이트 바로가기를 모아 두었습니다.</p></div></details>
+      </div>
+      <div class="empty" id="faqEmpty" hidden>조건에 맞는 FAQ가 없습니다. 다른 키워드를 입력하거나 카테고리를 '전체'로 바꿔 보세요.</div>
+    </div>
+  </section>
+
+  <!-- 자료실 -->
+  <section id="library" class="block">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="kicker">LIBRARY</div>
+        <h2>공개 가이드 자료실</h2>
+        <p>공공기관이 공개하는 재무·세금·금융 정보 사이트로 연결하고, 부서 배포 자료를 내려받을 수 있습니다.</p>
+      </div>
+      <div class="lib">
+        <article class="card res"><span class="org">국세청</span><h3>홈택스</h3><p>부가가치세 신고·납부, 세금계산서 조회 등 전자신고 서비스를 제공합니다.</p><a class="go" href="https://www.hometax.go.kr" target="_blank" rel="noopener noreferrer">사이트 열기 →</a></article>
+        <article class="card res"><span class="org">국세청</span><h3>국세청 누리집</h3><p>세금 신고 안내, 세법 해설, 납세자 지원 자료를 확인할 수 있습니다.</p><a class="go" href="https://www.nts.go.kr" target="_blank" rel="noopener noreferrer">사이트 열기 →</a></article>
+        <article class="card res"><span class="org">법제처</span><h3>국가법령정보센터</h3><p>부가가치세법, 소득세법 등 법령 조문과 개정 이력을 원문으로 검색합니다.</p><a class="go" href="https://www.law.go.kr" target="_blank" rel="noopener noreferrer">사이트 열기 →</a></article>
+        <article class="card res"><span class="org">금융감독원</span><h3>금융소비자 정보 포털 ‘파인’</h3><p>대출·예금·보험 등 금융상품 비교와 금융소비자 유의사항을 제공합니다.</p><a class="go" href="https://fine.fss.or.kr" target="_blank" rel="noopener noreferrer">사이트 열기 →</a></article>
+        <article class="card res"><span class="org">금융위원회</span><h3>금융위원회 누리집</h3><p>금융 정책, 보도자료, 제도 개선 사항을 공개합니다.</p><a class="go" href="https://www.fsc.go.kr" target="_blank" rel="noopener noreferrer">사이트 열기 →</a></article>
+        <article class="card res"><span class="org">한국은행</span><h3>경제통계시스템 ECOS</h3><p>기준금리, 환율 등 주요 경제·금융 통계를 조회할 수 있습니다.</p><a class="go" href="https://ecos.bok.or.kr" target="_blank" rel="noopener noreferrer">사이트 열기 →</a></article>
+      </div>
+      <h3 class="dl-head">내려받기 자료</h3>
+      <ul class="dl-list">
+        <li class="card dl-item">
+          <div class="dl-info"><p class="dl-name">생활_재무세금_기초가이드.pdf</p><p class="dl-desc">부가가치세, 대출 이자, 환율 등 실생활 재무 개념을 정리한 안내서 (2쪽)</p></div>
+          <span class="dl-size" aria-label="파일 용량">PDF · 274 KB</span>
+          <a class="dl-btn" href="files/daily-finance-tax-basic-guide.pdf" download="생활_재무세금_기초가이드.pdf" aria-label="생활_재무세금_기초가이드.pdf 다운로드">다운로드 ↓</a>
+        </li>
+        <li class="card dl-item">
+          <div class="dl-info"><p class="dl-name">재무_용어집.pdf</p><p class="dl-desc">매출액·영업이익 등 업무 중 자주 쓰는 재무 용어를 쉬운 말로 풀이한 자료 (2쪽)</p></div>
+          <span class="dl-size" aria-label="파일 용량">PDF · 254 KB</span>
+          <a class="dl-btn" href="files/finance-glossary.pdf" download="재무_용어집.pdf" aria-label="재무_용어집.pdf 다운로드">다운로드 ↓</a>
+        </li>
+      </ul>
+      <p class="lib-note">각 카드는 해당 기관의 메인 페이지로 연결됩니다. 세부 자료는 사이트 내 검색 기능을 이용하세요.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <strong>재무 계산기 &amp; 용어 사전</strong>
+    <span>본 페이지의 계산 결과와 설명은 일반적인 참고용이며 세무·법률·투자 자문이 아닙니다. 실제 의사결정 전 공식 자료와 전문가를 통해 확인하세요.</span>
+  </div>
+</footer>
+<button class="top-btn" id="toTop" aria-label="맨 위로">↑</button>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(s,r){return (r||document).querySelector(s)};
+  var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+  /* ===== 공통 유틸 ===== */
+  function parse(v){
+    var n = parseFloat(String(v).replace(/[,\s]/g,""));
+    return isFinite(n) ? n : NaN;
+  }
+  function won(n){ return isFinite(n) ? Math.round(n).toLocaleString("ko-KR") : "-"; }
+  function dec(n,d){ return isFinite(n) ? n.toLocaleString("ko-KR",{minimumFractionDigits:0,maximumFractionDigits:d}) : "-"; }
+  function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]}); }
+  function bindMoney(el, allowDecimal){
+    el.addEventListener("blur", function(){
+      var n = parse(el.value);
+      if(isFinite(n)) el.value = allowDecimal ? n.toLocaleString("ko-KR",{maximumFractionDigits:4}) : Math.round(n).toLocaleString("ko-KR");
+    });
+    el.addEventListener("focus", function(){ el.select(); });
+  }
+
+  /* ===== 상단 메뉴: 부드러운 이동 + 활성 표시 ===== */
+  var navLinks = $$(".menu a");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  $$("[data-nav]").forEach(function(a){
+    a.addEventListener("click", function(e){
+      var id = a.getAttribute("href");
+      var t = $(id);
+      if(!t) return;
+      e.preventDefault();
+      t.scrollIntoView({behavior: reduce ? "auto" : "smooth", block:"start"});
+      if(history.replaceState) history.replaceState(null,"",id);
+    });
+  });
+  var secIds = ["home","calc","glossary","faq","library"];
+  function setActive(){
+    var y = window.scrollY + 120, cur = "home";
+    secIds.forEach(function(id){
+      var s = document.getElementById(id);
+      if(s && s.offsetTop <= y) cur = id;
+    });
+    if(window.innerHeight + window.scrollY >= document.body.scrollHeight - 4) cur = "library";
+    navLinks.forEach(function(a){
+      var on = a.getAttribute("href") === "#"+cur;
+      a.classList.toggle("active", on);
+      if(on){ a.setAttribute("aria-current","true"); } else { a.removeAttribute("aria-current"); }
+    });
+    $("#toTop").classList.toggle("show", window.scrollY > 600);
+  }
+  window.addEventListener("scroll", setActive, {passive:true});
+  window.addEventListener("resize", setActive);
+  $("#toTop").addEventListener("click", function(){ window.scrollTo({top:0, behavior: reduce ? "auto" : "smooth"}); });
+  setActive();
+
+  /* ===== 탭 ===== */
+  var tabs = $$(".tab");
+  function selectTab(tab, focus){
+    tabs.forEach(function(t){
+      var on = t === tab;
+      t.setAttribute("aria-selected", on);
+      t.tabIndex = on ? 0 : -1;
+      var p = document.getElementById(t.getAttribute("aria-controls"));
+      p.classList.toggle("on", on);
+      p.hidden = !on;
+    });
+    if(focus) tab.focus();
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener("click", function(){ selectTab(t); });
+    t.addEventListener("keydown", function(e){
+      var k = e.key, n = null;
+      if(k === "ArrowRight") n = tabs[(i+1)%tabs.length];
+      else if(k === "ArrowLeft") n = tabs[(i-1+tabs.length)%tabs.length];
+      else if(k === "Home") n = tabs[0];
+      else if(k === "End") n = tabs[tabs.length-1];
+      if(n){ e.preventDefault(); selectTab(n,true); }
+    });
+  });
+
+  /* ===== 1) 부가세 ===== */
+  var vat = {
+    amt:$("#vatAmount"), rate:$("#vatRate"), rnd:$("#vatRound"), err:$("#vatErr"),
+    total:$("#vatTotal"), supply:$("#vatSupply"), tax:$("#vatTax"), lbl:$("#vatBigLabel")
+  };
+  function rounder(k){ return k==="ceil" ? Math.ceil : k==="round" ? Math.round : Math.floor; }
+  function clean(x){ return Math.round(x * 1e6) / 1e6; } /* 부동소수 오차로 절사가 1원 어긋나는 것 방지 */
+  function calcVat(){
+    var a = parse(vat.amt.value), r = parse(vat.rate.value);
+    var mode = $('input[name="vatMode"]:checked').value, f = rounder(vat.rnd.value);
+    vat.err.textContent = "";
+    if(!isFinite(a) || a < 0){ vat.err.textContent = "금액을 0 이상의 숫자로 입력하세요."; [vat.total,vat.supply,vat.tax].forEach(function(e){e.textContent="-"}); return; }
+    if(!isFinite(r) || r < 0){ vat.err.textContent = "세율을 0 이상의 숫자로 입력하세요."; [vat.total,vat.supply,vat.tax].forEach(function(e){e.textContent="-"}); return; }
+    var supply, tax, total;
+    if(mode === "excl"){
+      supply = a; tax = f(clean(a * r / 100)); total = supply + tax;
+      vat.lbl.textContent = "합계금액 (공급가액 + 부가세)";
+      vat.total.textContent = won(total);
+    } else {
+      total = a; supply = f(clean(a * 100 / (100 + r))); tax = total - supply;
+      vat.lbl.textContent = "합계금액 (입력값)";
+      vat.total.textContent = won(total);
+    }
+    vat.supply.textContent = won(supply);
+    vat.tax.textContent = won(tax);
+  }
+  bindMoney(vat.amt,false);
+  [vat.amt, vat.rate, vat.rnd].forEach(function(e){ e.addEventListener("input", calcVat); e.addEventListener("change", calcVat); });
+  $$('input[name="vatMode"]').forEach(function(e){ e.addEventListener("change", calcVat); });
+
+  /* ===== 4) 원천징수 (입력값은 저장·전송하지 않고 화면에서만 계산) ===== */
+  var wh = {
+    type:$("#whType"), pay:$("#whPay"), exp:$("#whExp"), rate:$("#whRate"), local:$("#whLocal"), rnd:$("#whRound"),
+    err:$("#whErr"), warn:$("#whWarn"), net:$("#whNet"), expAmt:$("#whExpAmt"), base:$("#whBase"),
+    tax:$("#whTax"), localAmt:$("#whLocalAmt"), total:$("#whTotal"), eff:$("#whEff")
+  };
+  var whPreset = { biz:[0,3], other60:[60,20], other0:[0,20], fin:[0,14] };
+  function whClear(){ [wh.net,wh.expAmt,wh.base,wh.tax,wh.localAmt,wh.total,wh.eff].forEach(function(e){e.textContent="-"}); wh.warn.hidden = true; }
+  function calcWh(){
+    var g = parse(wh.pay.value), e = parse(wh.exp.value), r = parse(wh.rate.value), l = parse(wh.local.value), f = rounder(wh.rnd.value);
+    wh.err.textContent = "";
+    if(!isFinite(g) || g < 0){ wh.err.textContent = "지급액을 0 이상의 숫자로 입력하세요."; whClear(); return; }
+    if(!isFinite(e) || e < 0 || e > 100){ wh.err.textContent = "필요경비율을 0~100 사이로 입력하세요."; whClear(); return; }
+    if(!isFinite(r) || r < 0 || r > 100){ wh.err.textContent = "소득세율을 0~100 사이로 입력하세요."; whClear(); return; }
+    if(!isFinite(l) || l < 0 || l > 100){ wh.err.textContent = "지방소득세율을 0~100 사이로 입력하세요."; whClear(); return; }
+    var expAmt = f(clean(g * e / 100)), base = g - expAmt;
+    var tax = f(clean(base * r / 100)), localAmt = f(clean(tax * l / 100)), total = tax + localAmt;
+    wh.expAmt.textContent = won(expAmt);
+    wh.base.textContent = won(base);
+    wh.tax.textContent = won(tax);
+    wh.localAmt.textContent = won(localAmt);
+    wh.total.textContent = won(total);
+    wh.net.textContent = won(g - total);
+    wh.eff.textContent = g > 0 ? dec(total / g * 100, 2) : "-";
+    var t = wh.type.value;
+    if((t === "other60" || t === "other0") && base > 0 && base <= 50000){
+      wh.warn.hidden = false;
+      wh.warn.textContent = "기타소득금액이 건당 5만원 이하이면 과세최저한에 해당해 원천징수 대상이 아닐 수 있습니다 (소득세법 제84조, 확인 필요).";
+    } else { wh.warn.hidden = true; }
+  }
+  bindMoney(wh.pay,false);
+  wh.type.addEventListener("change", function(){
+    var p = whPreset[wh.type.value];
+    if(p){ wh.exp.value = p[0]; wh.rate.value = p[1]; }
+    calcWh();
+  });
+  [wh.exp, wh.rate].forEach(function(el){
+    el.addEventListener("input", function(){ wh.type.value = "custom"; calcWh(); });
+  });
+  [wh.pay, wh.local, wh.rnd].forEach(function(el){ el.addEventListener("input", calcWh); el.addEventListener("change", calcWh); });
+  calcWh();
+
+  /* ===== 2) 대출 ===== */
+  var ln = {
+    p:$("#loanP"), r:$("#loanR"), n:$("#loanN"), u:$("#loanU"), t:$("#loanT"), err:$("#loanErr"),
+    monthly:$("#loanMonthly"), last:$("#loanLast"), interest:$("#loanInterest"), total:$("#loanTotal"), ratio:$("#loanRatio"),
+    big:$("#loanBigLabel"), sub:$("#loanSubLabel"), rows:$("#loanRows")
+  };
+  function buildSchedule(P, annualRate, n, type){
+    var r = annualRate / 100 / 12, bal = P, rows = [], sumInt = 0, sumPay = 0, i;
+    var level = 0;
+    if(type === "annuity") level = r === 0 ? P / n : P * r / (1 - Math.pow(1 + r, -n));
+    for(i = 1; i <= n; i++){
+      var interest = bal * r, principal, pay;
+      if(type === "annuity"){ pay = level; principal = pay - interest; }
+      else if(type === "principal"){ principal = P / n; pay = principal + interest; }
+      else { principal = (i === n) ? P : 0; pay = principal + interest; }
+      bal = Math.max(0, bal - principal);
+      if(i === n) bal = 0;
+      sumInt += interest; sumPay += pay;
+      rows.push({i:i, pay:pay, principal:principal, interest:interest, bal:bal});
+    }
+    return {rows:rows, sumInt:sumInt, sumPay:sumPay};
+  }
+  function calcLoan(){
+    var P = parse(ln.p.value), R = parse(ln.r.value), N = parse(ln.n.value);
+    var n = ln.u.value === "y" ? Math.round(N * 12) : Math.round(N);
+    var type = ln.t.value;
+    ln.err.textContent = "";
+    var bad = null;
+    if(!isFinite(P) || P <= 0) bad = "대출 원금을 0보다 큰 숫자로 입력하세요.";
+    else if(!isFinite(R) || R < 0) bad = "연 이자율을 0 이상으로 입력하세요.";
+    else if(!isFinite(n) || n < 1) bad = "대출 기간을 1 이상으로 입력하세요.";
+    else if(n > 600) bad = "대출 기간은 최대 50년(600개월)까지 계산합니다.";
+    if(bad){
+      ln.err.textContent = bad;
+      [ln.monthly,ln.last,ln.interest,ln.total,ln.ratio].forEach(function(e){e.textContent="-"});
+      ln.rows.innerHTML = "";
+      return;
+    }
+    var s = buildSchedule(P, R, n, type), first = s.rows[0], last = s.rows[s.rows.length-1];
+    if(type === "annuity"){
+      ln.big.textContent = "월 납입액 (원리금균등)";
+      ln.monthly.textContent = won(first.pay);
+      ln.sub.textContent = "마지막 달 납입액"; ln.last.textContent = won(first.pay);
+    } else if(type === "principal"){
+      ln.big.textContent = "첫 달 납입액 (원금균등)";
+      ln.monthly.textContent = won(first.pay);
+      ln.sub.textContent = "마지막 달 납입액"; ln.last.textContent = won(last.pay);
+    } else {
+      ln.big.textContent = "월 이자 납입액 (만기일시)";
+      ln.monthly.textContent = won(first.pay);
+      ln.sub.textContent = "만기 납입액 (원금 포함)"; ln.last.textContent = won(last.pay);
+    }
+    ln.interest.textContent = won(s.sumInt);
+    ln.total.textContent = won(P + s.sumInt);
+    ln.ratio.textContent = dec(s.sumInt / P * 100, 1);
+    var html = "";
+    s.rows.forEach(function(x){
+      html += "<tr><td>"+x.i+"</td><td>"+won(x.pay)+"</td><td>"+won(x.principal)+"</td><td>"+won(x.interest)+"</td><td>"+won(x.bal)+"</td></tr>";
+    });
+    ln.rows.innerHTML = html;
+  }
+  function syncLoanMax(){ ln.n.max = ln.u.value === "y" ? 50 : 600; }
+  ln.u.addEventListener("change", syncLoanMax); syncLoanMax();
+  bindMoney(ln.p,false);
+  [ln.p, ln.r, ln.n, ln.u, ln.t].forEach(function(e){ e.addEventListener("input", calcLoan); e.addEventListener("change", calcLoan); });
+
+  /* ===== 3) 환율 ===== */
+  var fx = {
+    cur:$("#fxCur"), unit:$("#fxUnit"), rate:$("#fxRate"), amt:$("#fxAmt"), fee:$("#fxFee"), err:$("#fxErr"),
+    lbl:$("#fxAmtLabel"), bigLbl:$("#fxBigLabel"), net:$("#fxNet"), netUnit:$("#fxNetUnit"),
+    gross:$("#fxGross"), feeAmt:$("#fxFeeAmt"), applied:$("#fxApplied")
+  };
+  function calcFx(){
+    var cur = (fx.cur.value || "외화").trim().toUpperCase() || "외화";
+    var unit = parseInt(fx.unit.value,10), rate = parse(fx.rate.value), amt = parse(fx.amt.value), fee = parse(fx.fee.value);
+    var dir = $('input[name="fxDir"]:checked').value;
+    fx.err.textContent = "";
+    fx.lbl.textContent = dir === "f2k" ? cur + " 금액" : "원화 금액 (원)";
+    var res = [fx.net, fx.gross, fx.feeAmt, fx.applied];
+    if(!isFinite(rate) || rate <= 0){ fx.err.textContent = "환율을 0보다 큰 숫자로 직접 입력하세요."; res.forEach(function(e){e.textContent="-"}); return; }
+    if(!isFinite(amt) || amt < 0){ fx.err.textContent = "금액을 0 이상의 숫자로 입력하세요."; res.forEach(function(e){e.textContent="-"}); return; }
+    if(!isFinite(fee) || fee < 0) fee = 0;
+    var per = rate / unit, gross, fe, net, outUnit;
+    if(dir === "f2k"){
+      gross = amt * per; fe = gross * fee / 100; net = gross - fe; outUnit = "원";
+      fx.net.textContent = won(net); fx.gross.textContent = won(gross); fx.feeAmt.textContent = won(fe);
+    } else {
+      gross = amt / per; fe = gross * fee / 100; net = gross - fe; outUnit = cur;
+      fx.net.textContent = dec(net, 2); fx.gross.textContent = dec(gross, 2); fx.feeAmt.textContent = dec(fe, 2);
+    }
+    fx.bigLbl.textContent = "수수료 반영 후 금액";
+    fx.netUnit.textContent = outUnit;
+    $$(".fxu").forEach(function(e){ e.textContent = outUnit; });
+    fx.applied.textContent = (unit === 100 ? "100 " : "1 ") + cur + " = " + dec(rate, 4) + " 원";
+  }
+  bindMoney(fx.rate,true); bindMoney(fx.amt,true);
+  [fx.cur, fx.unit, fx.rate, fx.amt, fx.fee].forEach(function(e){ e.addEventListener("input", calcFx); e.addEventListener("change", calcFx); });
+  $$('input[name="fxDir"]').forEach(function(e){ e.addEventListener("change", calcFx); });
+
+  /* ===== 용어 사전 ===== */
+  var TERMS = [
+    {t:"공급가액", c:"세금", d:"부가가치세를 제외한 거래 금액. 세금계산서상 부가세 계산의 기준이 되는 금액."},
+    {t:"부가가치세", c:"세금", d:"재화·용역이 거래되는 각 단계에서 생긴 부가가치에 부과하는 간접세. 최종 소비자가 부담하고 사업자가 납부한다."},
+    {t:"매입세액 공제", c:"세금", d:"사업자가 물건·서비스를 살 때 부담한 부가세를 매출 부가세에서 차감하는 제도. 요건과 불공제 항목은 법령 확인이 필요하다."},
+    {t:"세금계산서", c:"세금", d:"공급자가 공급받는 자에게 거래 사실과 부가세를 증명하기 위해 발급하는 문서. 전자세금계산서가 일반적이다."},
+    {t:"원천징수", c:"세금", d:"소득을 지급하는 자가 지급 시점에 세금을 미리 떼어 국가에 납부하는 제도. 이자소득·배당소득·사업소득 등에 적용된다."},
+    {t:"과세표준", c:"세금", d:"세율을 곱해 세액을 계산하는 기준 금액. 소득에서 공제 항목을 뺀 금액 등이 해당한다."},
+    {t:"단리", c:"대출·금리", d:"원금에만 이자가 붙는 방식. 이자가 다시 이자를 낳지 않는다."},
+    {t:"복리", c:"대출·금리", d:"원금뿐 아니라 이미 붙은 이자에도 이자가 붙는 방식. 기간이 길수록 단리와의 차이가 커진다."},
+    {t:"원리금균등상환", c:"대출·금리", d:"매달 원금과 이자를 합친 납입액이 같도록 갚는 방식. 초기에는 이자 비중이 크고 뒤로 갈수록 원금 비중이 커진다."},
+    {t:"원금균등상환", c:"대출·금리", d:"매달 갚는 원금이 같고 이자는 잔액에 따라 줄어드는 방식. 초기 납입액이 크지만 총이자는 보통 더 적다."},
+    {t:"만기일시상환", c:"대출·금리", d:"대출 기간 중 이자만 내고 만기에 원금을 한꺼번에 갚는 방식."},
+    {t:"거치기간", c:"대출·금리", d:"원금 상환을 미루고 이자만 내는 기간. 거치 후에는 원금 상환이 시작되어 월 부담이 늘 수 있다."},
+    {t:"기준금리", c:"대출·금리", d:"중앙은행이 정하는 정책 금리. 예금·대출 금리 등 시장금리에 영향을 준다."},
+    {t:"고정금리 / 변동금리", c:"대출·금리", d:"고정금리는 약정 기간 금리가 변하지 않고, 변동금리는 기준이 되는 지표 금리 변화에 따라 주기적으로 바뀐다."},
+    {t:"DSR", c:"대출·금리", d:"총부채원리금상환비율. 연간 모든 대출의 원리금 상환액을 연소득으로 나눈 비율로, 대출 한도 심사에 활용된다."},
+    {t:"LTV", c:"대출·금리", d:"담보인정비율. 담보 가치 대비 빌릴 수 있는 대출 금액의 비율."},
+    {t:"DTI", c:"대출·금리", d:"총부채상환비율. 연소득 대비 주택담보대출 원리금과 기타 대출 이자의 비율."},
+    {t:"환율", c:"환율", d:"서로 다른 두 통화를 교환하는 비율. 예: 1달러 = 몇 원."},
+    {t:"매매기준율", c:"환율", d:"외국환 거래의 기준이 되는 환율. 금융기관은 여기에 수수료를 더하거나 빼서 고객 적용 환율을 정한다."},
+    {t:"살 때 / 팔 때 환율", c:"환율", d:"고객이 외화를 살 때 적용하는 환율은 높고, 팔 때 적용하는 환율은 낮다. 그 차이에 금융기관 수익이 포함된다."},
+    {t:"스프레드", c:"환율", d:"매입 환율과 매도 환율의 차이 또는 기준환율에 가산하는 폭. 환전 비용의 핵심 요소."},
+    {t:"환율 우대", c:"환율", d:"환전 수수료(스프레드)의 일부를 깎아 주는 제도. 우대율이 높을수록 실제 비용이 줄어든다."},
+    {t:"자산 / 부채 / 자본", c:"회계 기초", d:"자산은 보유한 경제적 자원, 부채는 갚아야 할 의무, 자본은 자산에서 부채를 뺀 순자산. 자산 = 부채 + 자본."},
+    {t:"유동비율", c:"회계 기초", d:"유동자산을 유동부채로 나눈 비율. 단기 지급 능력을 보는 지표."},
+    {t:"감가상각", c:"회계 기초", d:"유형자산의 취득원가를 사용 기간에 걸쳐 비용으로 나누어 배분하는 회계 처리."},
+    {t:"현금흐름", c:"회계 기초", d:"일정 기간 현금이 들어오고 나간 흐름. 이익이 나도 현금이 부족할 수 있어 별도로 관리한다."},
+    {t:"인플레이션", c:"투자·경제", d:"물가가 지속적으로 오르는 현상. 같은 돈으로 살 수 있는 물건이 줄어든다."},
+    {t:"분산투자", c:"투자·경제", d:"여러 자산에 나누어 투자해 특정 자산의 손실이 전체에 미치는 영향을 줄이는 방법."},
+    {t:"ETF", c:"투자·경제", d:"상장지수펀드. 지수 등을 추종하도록 만든 펀드로 주식처럼 거래소에서 사고판다."},
+    {t:"배당", c:"투자·경제", d:"기업이 이익의 일부를 주주에게 나누어 주는 것."}
+  ];
+  var cats = ["전체"].concat(TERMS.reduce(function(a,x){ if(a.indexOf(x.c) < 0) a.push(x.c); return a; }, []));
+  var curCat = "전체";
+  var chipBox = $("#chips"), termBox = $("#terms"), countEl = $("#count"), qEl = $("#q");
+
+  function buildChips(){
+    chipBox.innerHTML = "";
+    cats.forEach(function(c){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "chip"; b.textContent = c;
+      b.setAttribute("aria-pressed", c === curCat);
+      b.addEventListener("click", function(){ curCat = c; buildChips(); renderTerms(); });
+      chipBox.appendChild(b);
+    });
+  }
+  function hl(text, q){
+    var s = esc(text);
+    if(!q) return s;
+    var low = text.toLowerCase(), ql = q.toLowerCase(), out = "", pos = 0, idx;
+    while((idx = low.indexOf(ql, pos)) !== -1){
+      out += esc(text.slice(pos, idx)) + "<mark>" + esc(text.slice(idx, idx + q.length)) + "</mark>";
+      pos = idx + q.length;
+    }
+    return out + esc(text.slice(pos));
+  }
+  function renderTerms(){
+    var q = qEl.value.trim(), ql = q.toLowerCase();
+    var list = TERMS.filter(function(x){
+      if(curCat !== "전체" && x.c !== curCat) return false;
+      return !ql || x.t.toLowerCase().indexOf(ql) >= 0 || x.d.toLowerCase().indexOf(ql) >= 0;
+    });
+    countEl.textContent = list.length + "개 용어" + (q ? " (검색: " + q + ")" : "");
+    if(!list.length){
+      termBox.innerHTML = '<div class="empty card" style="grid-column:1/-1">검색 결과가 없습니다. 다른 단어나 분류로 찾아보세요.</div>';
+      return;
+    }
+    termBox.innerHTML = list.map(function(x){
+      return '<article class="card term"><h3>' + hl(x.t,q) + '<span class="tag">' + esc(x.c) + '</span></h3><p>' + hl(x.d,q) + '</p></article>';
+    }).join("");
+  }
+  qEl.addEventListener("input", renderTerms);
+  buildChips(); renderTerms();
+
+  /* 초기 계산 */
+  calcVat(); calcLoan(); calcFx();
+})();
+</script>
+<script>
+(function(){
+  var qEl=document.getElementById("faqQ"), chipBox=document.getElementById("faqChips"),
+      countEl=document.getElementById("faqCount"), emptyEl=document.getElementById("faqEmpty"),
+      items=Array.prototype.slice.call(document.querySelectorAll("#faqList details"));
+  if(!qEl||!items.length) return;
+  var cats=["전체"], cur="전체";
+  items.forEach(function(d){ var c=d.getAttribute("data-cat"); if(c&&cats.indexOf(c)<0) cats.push(c); });
+  var open0=items.map(function(d){return d.open;});
+  cats.forEach(function(c){
+    var b=document.createElement("button");
+    b.type="button"; b.className="chip"; b.textContent=c;
+    b.setAttribute("aria-pressed", c===cur?"true":"false");
+    b.addEventListener("click",function(){
+      cur=c;
+      Array.prototype.forEach.call(chipBox.children,function(x){x.setAttribute("aria-pressed", x===b?"true":"false");});
+      apply();
+    });
+    chipBox.appendChild(b);
+  });
+  function norm(t){ return String(t).toLowerCase().replace(/\s+/g,""); }
+  function apply(){
+    var q=norm(qEl.value), shown=0;
+    items.forEach(function(d,i){
+      var ok=(cur==="전체"||d.getAttribute("data-cat")===cur) && (!q||norm(d.textContent).indexOf(q)>-1);
+      d.hidden=!ok;
+      if(ok){ shown++; d.open = q ? true : open0[i]; }
+    });
+    countEl.textContent = shown+"개 / 전체 "+items.length+"개";
+    emptyEl.hidden = shown>0;
+  }
+  qEl.addEventListener("input",apply);
+  apply();
+})();
+</script>
+<script>
+(function(){
+  var btn=document.getElementById("navToggle"), menu=document.getElementById("mainMenu");
+  if(!btn||!menu) return;
+  function setOpen(o){
+    menu.classList.toggle("open",o);
+    btn.setAttribute("aria-expanded",o?"true":"false");
+    btn.setAttribute("aria-label",o?"메뉴 닫기":"메뉴 열기");
+  }
+  btn.addEventListener("click",function(){ setOpen(!menu.classList.contains("open")); });
+  menu.addEventListener("click",function(e){ if(e.target.closest("a")) setOpen(false); });
+  document.addEventListener("click",function(e){
+    if(menu.classList.contains("open") && !menu.contains(e.target) && !btn.contains(e.target)) setOpen(false);
+  });
+  document.addEventListener("keydown",function(e){
+    if(e.key==="Escape" && menu.classList.contains("open")){ setOpen(false); btn.focus(); }
+  });
+  window.addEventListener("resize",function(){ if(window.innerWidth>720) setOpen(false); });
+})();
+</script>
+<script>
+(function(){
+  var btn=document.getElementById("themeToggle"), root=document.documentElement;
+  if(!btn) return;
+  function cur(){ return root.getAttribute("data-theme")==="light"?"light":"dark"; }
+  function paint(){
+    var light=cur()==="light", ic=btn.firstChild;
+    ic.textContent = light ? "☾" : "☀";
+    var l = light ? "다크 모드로 전환" : "라이트 모드로 전환";
+    btn.setAttribute("aria-label",l); btn.title=l;
+  }
+  btn.addEventListener("click",function(){
+    var n=cur()==="light"?"dark":"light";
+    root.setAttribute("data-theme",n);
+    try{ localStorage.setItem("theme",n); }catch(e){}
+    paint();
+  });
+  paint();
+})();
+</script>
+</body>
+</html>
